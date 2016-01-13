@@ -1,5 +1,5 @@
 # Search-Engine-and-Crawler
-Python based search engine and crawler. Search engine uses Whoosh and the crawler uses Beautiful-soup 
+Python based search engine and crawler. Search engine uses Whoosh and the crawler uses Beautiful-soup to process the information.
 ##Crawler
 #####- Overview:
 
@@ -20,27 +20,52 @@ This organizes and keeps the duplicate material out of the program.
 With a little adjustment to the code, the total size of the repository can be used as a parameter to decide when to stop crawling.
 The program displays this for every webpage crawled. 
 
-#####- Architecture
->Architecturally the program goes starts with one URL, and puts it in a queue of URLS and visited. 
-Then the program checks if the directory that the user has provided with exists, if it does not exist the program makes that directory and switches current directory to it. 
-This is to place all the HTML documents in a text file to place into the proper directory.
-The queue then takes that urls [0] and process the source code to use for the BeautifulSoup library. 
-The BeautifulSoup library is there to make it easier to parse through HTML code. 
-Then the program checks for all the ‘href’ tags and appends them to both the urls and visited lists while following the parameters.
-In this case, the parameters can be increased to get a better result. 
-To improve performance the program excluded addition of pdf and jpg files from the lists.
-This allows the program to not look at the code, as the code is not encoded properly for windows.
-While doing this the HTML code for each of the urls [0] is being inputted into a text file with the title of the URL.
-If the title is not provided the title is replaced with “no title” followed by an appropriate number to keep identifications clear.
+## Search engine
+#####- Overview:
+>We used Whoosh, an open source Python library, to build our search engine. 
+Whoosh provides full-indexing and searching library. 
+It provides several indexing and searching functions that allow us to quickly learn and utilize. 
+The main difference from Whoosh and Lucene is that Lucene is built in Java, but Whoosh is built in pure Python. 
+The two systems provide similar functionalities. 
 
->To keep track of the depth, a list is used. The list contains the length of the visited urls. 
-The idea of making this list is based on a binary search tree.
-As one page is scanned all its links are on depth 1, and all the links picked up from scanning from depth 1 are on depth 2.
-This led to the design of using the length of visited urls and pages visited to keep a count on the depth. 
+>Our search engine contains several different parts, indexing, and query parsing, and searching.
+Before we start using Whoosh, we need to define the schema for the index that lists the fields in the index. 
+In our schema, we index the entire field as a single unit. 
+We also have stemming and using stop words in our index to eliminate useless, extra index and save time and memory space. 
+However, to avoid accidently deleting important words, we separate the title and give the title more weight to emphasize the importance of it. 
 
->To start at depth 0 any links in the visited are going to belong to depth 1. 
-Therefore, the size of that would be the amount of links that were collected from the first URL. 
-This leads to the program knowing that depth 1 will be at the number of links are in the visited list. 
-After the depth 1 is complete, the program gets the length again which now indicates the size of depth 2.
-This is done continuously to update the amount of pages needed to be parsed in order to go through the depths.
+>After we define our schema, we call the function create_in() from Whoosh to create our index. 
+In our index, other than common fields such as title, we also the URL link of each of the documents parsed.
+This is done by making adding a special tag when crawling to make the first line of the text file of the html contains the URL. 
+In the end of indexing, we call the writer function to write the index into our database.
+Before we call the writer functions, all index are free to be changed, but after writer function starts to commit, we are making our final step to finish indexing. 
+This can be modified or improved to extend the indexing than start from scratch every time.
+
+>With our index, we can do search by parsing the input query keywords and matching the keywords with our index.
+In our search engine, we parse the query keywords by calling the QueryParser function from Whoosh. 
+The QueryParser helps parsing the inputted keywords and allow us to pass everything into a searcher. 
+The searcher would take in the parsed query and searching methods that we define. 
+
+>In our search engine, we apply two different methods to the search algorithm. 
+The first one is BM25, which we used as our default-searching algorithm. 
+The reason we pick this is that BM25 returns better, more accurate results the most other algorithm. 
+Through calculating the relation of each word between the query and the documents, we can find the most relevant results in a shorter time.
+We also use TFIDF, term frequency over inverse document frequency, as our search algorithm. 
+TFIDF is a basic searching algorithm that returns the results faster than other searching algorithm.
+Even though the relevancy ranking of the result from TFIDF is not as accurate as BM25, it is faster.
+
+>Another functionality that is included is the ability to give keywords in the query more or less weight.
+Another added functionality is using keywords in search like AND or OR or NOT to further simplify the search. 
+Also included is the option to choose simply which parsing function to use whether it be AND or OR. 
+This is to give the user fast way to change inputs. 
+
+>For the website, we write the base skeleton structure first in html. 
+We first define the main searching box and result page. 
+We then define the css to apply background image and design to our website and make it perfect. 
+After we make our search box for the website, we change the html file to a php file in order to make a dynamic webpage.
+The user input would be directly passed in to a conditional loop and call the Python file of the searcher.
+When inputting the search query, the user can also select either BM25 or TFIDF as the searching method.
+The default searching method will be BM25. When the searcher finishes searching through the index, it will send the top N results to the website and the website will then print out the top N results of the search and a snippet of each result on the same page. 
+The N is calculated by the query program and displays the number of results the program was able to find, maxing out at 10.
+Note the user input query and search type will appear on the hyperlink of the website so the user can double check. 
 
