@@ -29,6 +29,20 @@ With a little adjustment to the code, the total size of the repository can be us
 The program displays this for every webpage crawled. 
 
 ## Search engine
+Make sure to run indexing and searcher in the same directory.
+
+For indexing part of the search engine, there is only one paramater.
+The paramater is the output directory that was formed by the crawler.
+After indexing is finished a folder named indexdir should be created.
+
+For the search part of the search engine, there are three paramaters.
+
+- The query term (the term you want your search engine to search for)
+- The scoring method choose between "BM25" or "TFIDF" (case sensitive)
+- The operation you want oto use to search "AND" or "OR" (case sensitive)
+
+The output is in html format by default but can be switched from the source code.
+
 ##### Overview:
 >We used Whoosh, an open source Python library, to build our search engine. 
 Whoosh provides full-indexing and searching library. 
