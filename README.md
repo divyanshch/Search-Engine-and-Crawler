@@ -1,7 +1,15 @@
 # Search-Engine-and-Crawler
 Python based search engine and crawler. Search engine uses Whoosh and the crawler uses Beautiful-soup to process the information.
 ##Crawler
-#####- Overview:
+Use the crawler to gather html source code files starting with a certain seed. 
+The html souce code is stored in a certain folder with the title of the website being the name of the file.
+
+- The first paramater when running the program is the seed (the url you want to start to crawl from).
+- Second the number of pages to crawl. 
+- Third number of hops away from the original seed.
+- Fourth the output directory name to store all the html source code.
+
+##### Overview:
 
 >This program takes in a particular seed and scans that webpage for any links. 
 It then appends those links onto a queue and continues to pop and append until one of the given parameters is reached. 
@@ -21,7 +29,7 @@ With a little adjustment to the code, the total size of the repository can be us
 The program displays this for every webpage crawled. 
 
 ## Search engine
-#####- Overview:
+##### Overview:
 >We used Whoosh, an open source Python library, to build our search engine. 
 Whoosh provides full-indexing and searching library. 
 It provides several indexing and searching functions that allow us to quickly learn and utilize. 
